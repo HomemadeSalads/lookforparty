@@ -1,0 +1,154 @@
+CREATE SCHEMA `party` ;
+
+CREATE TABLE `party`.`player` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE);
+
+CREATE TABLE `party`.`post` (
+  `postid` INT NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL,
+  `header` VARCHAR(100) NULL,
+  `desc` VARCHAR(100) NULL,
+  `reward` INT NULL,
+  PRIMARY KEY (`postid`),
+  CONSTRAINT `userid`
+    FOREIGN KEY (`id`)
+    REFERENCES `party`.`player` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+ALTER TABLE `party`.`player` 
+ADD COLUMN `password` VARCHAR(200) NULL AFTER `username`;
+
+ALTER TABLE `party`.`player` 
+ADD COLUMN `email` VARCHAR(100) NULL DEFAULT 'dummy@gmail.com' AFTER `username`;
+
+CREATE TABLE `party`.`bank` (
+  `id` INT NOT NULL,
+  `gold` INT NULL DEFAULT 0,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `party`.`profilepic` (
+  `id` INT NOT NULL,
+  `link` VARCHAR(300) NULL DEFAULT 'https://static.wikia.nocookie.net/zenless-zone-zero/images/5/53/Avatar_Default_Anonymous.png/revision/latest?cb=20240725210433',
+  PRIMARY KEY (`id`));
+
+ALTER TABLE `party`.`bank` 
+ADD CONSTRAINT `id`
+  FOREIGN KEY (`id`)
+  REFERENCES `party`.`player` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+CREATE TABLE `party`.`gear` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `score` INT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `gearId`
+    FOREIGN KEY (`id`)
+    REFERENCES `party`.`player` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+CREATE TABLE `party`.`party` (
+  `postId` INT NOT NULL,
+  `member` INT NULL DEFAULT 1,
+  `max` INT NULL DEFAULT 1,
+  PRIMARY KEY (`postId`),
+  CONSTRAINT `postpartyId`
+    FOREIGN KEY (`postId`)
+    REFERENCES `party`.`post` (`postid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+
+CREATE TABLE `party`.`member` (
+  `id` INT NOT NULL,
+  `playerId` INT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `playerId_UNIQUE` (`playerId` ASC) VISIBLE,
+  CONSTRAINT `postIDm`
+    FOREIGN KEY (`id`)
+    REFERENCES `party`.`post` (`postid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `memberId`
+    FOREIGN KEY (`playerId`)
+    REFERENCES `party`.`player` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+ALTER TABLE `party`.`member` 
+DROP FOREIGN KEY `memberId`;
+ALTER TABLE `party`.`member` 
+CHANGE COLUMN `playerId` `playerId` INT NOT NULL ,
+DROP PRIMARY KEY,
+ADD PRIMARY KEY (`id`, `playerId`),
+DROP INDEX `playerId_UNIQUE` ;
+;
+ALTER TABLE `party`.`member` 
+ADD CONSTRAINT `memberId`
+  FOREIGN KEY (`playerId`)
+  REFERENCES `party`.`player` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+ALTER TABLE `party`.`party` 
+ADD COLUMN `partyname` VARCHAR(200) NULL DEFAULT 'myparty' AFTER `postId`;
+
+CREATE TABLE `party`.`contact` (
+  `postid` INT NOT NULL,
+  `contact` VARCHAR(200) NULL DEFAULT 'nocontact',
+  PRIMARY KEY (`postid`),
+  CONSTRAINT `postinfokey`
+    FOREIGN KEY (`postid`)
+    REFERENCES `party`.`post` (`postid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+ALTER TABLE `party`.`gear` 
+ADD COLUMN `class` VARCHAR(100) NULL AFTER `id`;
+
+ALTER TABLE `party`.`gear` 
+CHANGE COLUMN `class` `class` VARCHAR(100) NULL DEFAULT 'Novice' ;
+
+ALTER TABLE `party`.`party` 
+ADD COLUMN `status` VARCHAR(45) NULL DEFAULT 'ACTIVE' AFTER `max`;
+
+CREATE TABLE `party`.`blacksmith` (
+  `itemid` INT NOT NULL AUTO_INCREMENT,
+  `itemname` VARCHAR(100) NULL DEFAULT 'item',
+  `itemtype` VARCHAR(45) NULL DEFAULT 'item',
+  `itemprice` INT NULL DEFAULT 0,
+  `itemgear` INT NULL DEFAULT 1 AFTER `itempic`,
+  `itempic` VARCHAR(300) NULL DEFAULT 'img',
+  PRIMARY KEY (`itemid`));
+
+CREATE TABLE `party`.`postresult` (
+  `postid` INT NOT NULL,
+  `detail` VARCHAR(500) NULL,
+  PRIMARY KEY (`postid`),
+  CONSTRAINT `postresult`
+    FOREIGN KEY (`postid`)
+    REFERENCES `party`.`post` (`postid`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE TABLE `blacksmith` (
+  `itemid` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL,
+  `category` varchar(45) DEFAULT NULL,
+  `price` int DEFAULT '1',
+  `icon` varchar(45) DEFAULT '<Shield />',
+  `rarity` varchar(45) DEFAULT 'Common',
+  `score` int DEFAULT '1',
+  PRIMARY KEY (`itemid`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `party`.`blacksmith` 
+DROP COLUMN `icon`;
+
+
+
