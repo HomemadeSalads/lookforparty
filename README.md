@@ -22,6 +22,14 @@ look for ../lookforparty/etc-noncodebase/sql for sql file
 configs at ../lookforparty/backend/connect.js
 here you will need to change the db setting to match your sql server
 
+export const db = mysql.createConnection({
+    host:"localhost",
+    user:"root",
+    password:"password",
+    database:"party"
+});
+
+change your db -> host(defalut "localhost") , user(defalut "root") , password , database(defalut if use prebuild sqlfile "party")
 
 to start 
 open 2 terminal 
@@ -30,6 +38,8 @@ open 2 terminal
 
 and npm start 
 on both terminal
+
+right now the webbaseapplication is not supporting hosting on the web
 
 enjoy
 
