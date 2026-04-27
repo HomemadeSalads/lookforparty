@@ -50,7 +50,7 @@ CREATE TABLE `party`.`gear` (
     FOREIGN KEY (`id`)
     REFERENCES `party`.`player` (`id`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE;
+    ON UPDATE CASCADE);
 
 CREATE TABLE `party`.`party` (
   `postId` INT NOT NULL,
@@ -122,7 +122,7 @@ CREATE TABLE `party`.`blacksmith` (
   `itemname` VARCHAR(100) NULL DEFAULT 'item',
   `itemtype` VARCHAR(45) NULL DEFAULT 'item',
   `itemprice` INT NULL DEFAULT 0,
-  `itemgear` INT NULL DEFAULT 1 AFTER `itempic`,
+  `itemgear` INT NULL DEFAULT 1,
   `itempic` VARCHAR(300) NULL DEFAULT 'img',
   PRIMARY KEY (`itemid`));
 
